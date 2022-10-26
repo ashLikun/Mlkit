@@ -4,9 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.king.mlkit.vision.barcode.view.ScanStyle1View
+    <com.ashlikun.mlkit.vision.barcode.view.ScanStyle1View
         android:id="@+id/scanView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <TextView
+        android:id="@+id/rightTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical|right"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:text="相册"
+        android:textColor="#FFFFFF" />
 </FrameLayout>

@@ -15,12 +15,24 @@
  */
 package com.ashlikun.zxing.simple
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.ashlikun.zxing.simple.databinding.QrcodeScanActivity2Binding
 import com.king.app.dialog.AppDialog
 import com.king.app.dialog.AppDialogConfig
-import com.king.mlkit.vision.barcode.view.BaseScanView
+import com.ashlikun.mlkit.vision.barcode.view.BaseScanView
+import com.zhihu.matisse.Matisse
+import com.zhihu.matisse.MimeType
+import com.zhihu.matisse.engine.impl.GlideEngine
+import java.io.File
 
 /**
  * @author　　: 李坤
@@ -31,16 +43,16 @@ import com.king.mlkit.vision.barcode.view.BaseScanView
  */
 
 class ScanSimple2Activity : AppCompatActivity() {
-    val scanView: BaseScanView by lazy {
-        findViewById(R.id.scanView)
+    val binding by lazy {
+        QrcodeScanActivity2Binding.inflate(LayoutInflater.from(this))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.qrcode_scan_activity2)
-        scanView.init(this)
-        scanView.onResult = { result ->
-            scanView.cameraScan.setAnalyzeImage(false)
+        setContentView(binding.root)
+        binding.scanView.init(this)
+        binding.scanView.onResult = { result ->
+            binding.scanView.cameraScan.setAnalyzeImage(false)
             val buffer = StringBuilder()
             val bitmap = result.bitmap.drawRect { canvas, paint ->
                 for ((index, data) in result.result.withIndex()) {
@@ -54,7 +66,7 @@ class ScanSimple2Activity : AppCompatActivity() {
             val config = AppDialogConfig(this, R.layout.barcode_result_dialog)
             config.setContent(buffer).setOnClickConfirm {
                 AppDialog.INSTANCE.dismissDialog()
-                scanView.cameraScan.setAnalyzeImage(true)
+                binding.scanView.cameraScan.setAnalyzeImage(true)
             }.setOnClickCancel {
                 AppDialog.INSTANCE.dismissDialog()
                 finish()
@@ -62,6 +74,53 @@ class ScanSimple2Activity : AppCompatActivity() {
             val imageView = config.getView<ImageView>(R.id.ivDialogContent)
             imageView.setImageBitmap(bitmap)
             AppDialog.INSTANCE.showDialog(config, false)
+        }
+        binding.rightTextView.setOnClickListener {
+            if (!checkPermissionRW()) {
+                requstPermissionRW()
+                return@setOnClickListener
+            }
+            Matisse.from(this)
+                .choose(MimeType.ofAll())
+                .countable(true)
+                .maxSelectable(9)
+                .gridExpectedSize(300)
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                .thumbnailScale(0.85f)
+                .imageEngine(GlideEngine())
+                .showPreview(false) // Default is `true`
+                .forResult(1)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                val path = Matisse.obtainPathResult(data)[0]
+                binding.scanView.parseFile(File(path))
+            }
+        }
+    }
+
+    fun checkPermissionRW(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkSelfPermission(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+
+            checkSelfPermission(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+
+        } else {
+            return true
+        }
+    }
+
+    fun requstPermissionRW() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 200)
         }
     }
 

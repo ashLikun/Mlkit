@@ -20,8 +20,8 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.king.app.dialog.AppDialog
 import com.king.app.dialog.AppDialogConfig
-import com.king.mlkit.vision.barcode.XScanBar
-import com.king.mlkit.vision.camera.config.ResolutionCameraConfig
+import com.ashlikun.mlkit.vision.barcode.XScanBar
+import com.ashlikun.mlkit.vision.camera.config.ResolutionCameraConfig
 
 /**
  * @author　　: 李坤

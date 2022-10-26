@@ -14,12 +14,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.king.mlkit.vision.barcode.ViewfinderView
+    <com.ashlikun.mlkit.vision.barcode.ViewfinderView
         android:id="@+id/viewfinderView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:frameRatio="0.9"
         app:viewfinderStyle="popular" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#11000000" />
 
     <ImageView
         android:id="@+id/ivFlashlight"

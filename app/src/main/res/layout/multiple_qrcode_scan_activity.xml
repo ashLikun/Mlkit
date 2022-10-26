@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.king.mlkit.vision.barcode.ViewfinderView
+    <com.ashlikun.mlkit.vision.barcode.ViewfinderView
         android:id="@+id/viewfinderView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
