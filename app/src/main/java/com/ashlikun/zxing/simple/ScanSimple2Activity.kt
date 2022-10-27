@@ -52,7 +52,7 @@ class ScanSimple2Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        binding.scanView.init(this)
+//        binding.scanView.init(this)
         binding.scanView.onResult = { result ->
             binding.scanView.cameraScan.setAnalyzeImage(false)
             val buffer = StringBuilder()

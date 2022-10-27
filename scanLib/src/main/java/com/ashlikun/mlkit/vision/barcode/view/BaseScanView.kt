@@ -9,6 +9,7 @@ import androidx.annotation.CallSuper
 import androidx.camera.view.PreviewView
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.ashlikun.mlkit.vision.barcode.analyze.BarcodeScanningAnalyzer
 import com.ashlikun.mlkit.vision.barcode.utils.Utils
@@ -38,6 +39,8 @@ abstract class BaseScanView @JvmOverloads constructor(
      */
     var onResult: OnScanSuccess? = null
     var onFailure: OnScanResultFailure? = null
+
+    protected abstract val layoutId: Int
 
     /**
      * 预览的View
@@ -81,7 +84,7 @@ abstract class BaseScanView @JvmOverloads constructor(
     /**
      * 扫码结果回调
      */
-    protected open val onScanResultCallback = object : OnScanResultCallback<List<Barcode>> {
+    protected val onScanResultCallback = object : OnScanResultCallback<List<Barcode>> {
         override fun onScanResultCallback(result: AnalyzeResult<List<Barcode>>) {
             onResult?.invoke(result)
         }
@@ -93,8 +96,6 @@ abstract class BaseScanView @JvmOverloads constructor(
     }
 
 
-    protected abstract val layoutId: Int
-
     init {
         LayoutInflater.from(context).inflate(layoutId, this, false).let {
             addView(it)
@@ -102,6 +103,26 @@ abstract class BaseScanView @JvmOverloads constructor(
         //手电筒点击
         flashlightView?.setOnClickListener {
             toggleTorchState()
+        }
+
+
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (!this::lifecycleOwner.isInitialized) {
+            var isSuccess = false
+            runCatching {
+                findViewTreeLifecycleOwner()?.apply {
+                    isSuccess = true
+                    init(this)
+                }
+            }
+            if (!isSuccess) {
+                if (context is LifecycleOwner) {
+                    init(context as LifecycleOwner)
+                }
+            }
         }
     }
 
@@ -114,13 +135,17 @@ abstract class BaseScanView @JvmOverloads constructor(
         flashlightView?.isSelected = !isTorch
     }
 
-
     /**
      * 初始化
+     * 内部会自动初始化(findViewTreeLifecycleOwner 或者 Context->LifecycleOwner)
      */
     fun init(lifecycleOwner: LifecycleOwner) {
+        if (this::lifecycleOwner.isInitialized) {
+            return
+        }
         this.lifecycleOwner = lifecycleOwner
         cameraScan.bindFlashlightView(flashlightView)
+        lifecycleOwner.lifecycle.removeObserver(this)
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
