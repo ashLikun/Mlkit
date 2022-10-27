@@ -142,8 +142,10 @@ public abstract class CameraScan<T> implements ICamera, ICameraControl {
 
         /**
          * 扫码结果识别失败时触发此回调方法
+         *
+         * @param isParseFile 是否主题解析文件时候的回调
          */
-        default void onScanResultFailure() {
+        default void onScanResultFailure(boolean isParseFile) {
 
         }
 

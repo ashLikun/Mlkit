@@ -12,6 +12,33 @@ import com.king.mlkit.vision.barcode.R
  * 邮箱　　：496546144@qq.com
  *
  * 功能介绍：
+ * ```xml
+<com.ashlikun.mlkit.vision.barcode.view.ScanStyle1View
+android:id="@+id/scanView"
+android:layout_width="match_parent"
+android:layout_height="match_parent" />
+
+```
+```kotlin
+//初始化摄像头
+binding.scanView.init(this)
+//获取结果
+binding.scanView.onResult = { result ->
+binding.scanView.cameraScan.setAnalyzeImage(false)
+val buffer = StringBuilder()
+val bitmap = result.bitmap.drawRect { canvas, paint ->
+for ((index, data) in result.result.withIndex()) {
+buffer.append("[$index] ").append(data.displayValue).append("\n")
+data.boundingBox?.let { box ->
+canvas.drawRect(box, paint)
+}
+}
+}
+}
+//相册选择图片解析
+binding.scanView.parseFile(File(path))
+```
+
  */
 open class ScanStyle1View @JvmOverloads constructor(
     context: Context,

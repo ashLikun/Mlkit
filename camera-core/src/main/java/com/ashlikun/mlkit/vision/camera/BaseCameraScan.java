@@ -17,9 +17,7 @@ package com.ashlikun.mlkit.vision.camera;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -43,12 +41,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.common.util.concurrent.ListenableFuture;
 import com.ashlikun.mlkit.vision.camera.analyze.Analyzer;
 import com.ashlikun.mlkit.vision.camera.config.CameraConfig;
 import com.ashlikun.mlkit.vision.camera.manager.BeepManager;
 import com.ashlikun.mlkit.vision.camera.util.MlImageUtils;
 import com.ashlikun.mlkit.vision.camera.util.MlLogUtils;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
 import java.util.concurrent.Executors;
@@ -104,7 +102,8 @@ public class BaseCameraScan<T> extends CameraScan<T> {
 
     private View flashlightView;
 
-    private MutableLiveData<AnalyzeResult<T>> mResultLiveData;
+    private MutableLiveData<Pair<Boolean, AnalyzeResult<T>>> mResultLiveData;
+    private MutableLiveData<Boolean> flashChangLiveData;
 
     private OnScanResultCallback mOnScanResultCallback;
     private Analyzer.OnAnalyzeListener<AnalyzeResult<T>> mOnAnalyzeListener;
@@ -115,15 +114,6 @@ public class BaseCameraScan<T> extends CameraScan<T> {
     private boolean isClickTap;
     private float mDownX;
     private float mDownY;
-    private Handler mainHandle = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == FLASH_CHANG) {
-                changFlash((Boolean) msg.obj);
-            }
-        }
-    };
 
     public BaseCameraScan(Context context, @NonNull LifecycleOwner lifecycleOwner, @NonNull PreviewView previewView) {
         this.mLifecycleOwner = lifecycleOwner;
@@ -164,23 +154,27 @@ public class BaseCameraScan<T> extends CameraScan<T> {
         mResultLiveData = new MutableLiveData<>();
         mResultLiveData.observe(mLifecycleOwner, result -> {
             isAnalyzeResult = false;
-            if (result != null) {
-                handleAnalyzeResult(result);
+            if (result.first && result.second != null) {
+                handleAnalyzeResult(result.second);
             } else if (mOnScanResultCallback != null) {
-                mOnScanResultCallback.onScanResultFailure();
+                mOnScanResultCallback.onScanResultFailure(result.first);
             }
+        });
+        flashChangLiveData = new MutableLiveData<>();
+        flashChangLiveData.observe(mLifecycleOwner, result -> {
+            changFlash(result);
         });
 
         mOnAnalyzeListener = new Analyzer.OnAnalyzeListener<AnalyzeResult<T>>() {
 
             @Override
             public void onSuccess(@NonNull AnalyzeResult<T> result) {
-                mResultLiveData.postValue(result);
+                mResultLiveData.postValue(new Pair(true, result));
             }
 
             @Override
             public void onFailure() {
-                mResultLiveData.postValue(null);
+                mResultLiveData.postValue(new Pair(false, null));
             }
         };
 
@@ -197,18 +191,13 @@ public class BaseCameraScan<T> extends CameraScan<T> {
     }
 
     private void handleFlash(int avDark) {
-        Message msg = Message.obtain();
-        msg.what = FLASH_CHANG;
         if (avDark > STANDVALUES && (isBright == null || isBright)) {
             isBright = false;
-            msg.obj = false;
+            flashChangLiveData.postValue(false);
         }
         if (avDark < STANDVALUES && (isBright == null || !isBright)) {
             isBright = true;
-            msg.obj = true;
-        }
-        if (msg.obj != null) {
-            mainHandle.sendMessage(msg);
+            flashChangLiveData.postValue(true);
         }
     }
 
@@ -493,7 +482,6 @@ public class BaseCameraScan<T> extends CameraScan<T> {
             mBeepManager.close();
         }
         stopCamera();
-        mainHandle.removeCallbacksAndMessages(null);
     }
 
     @Override

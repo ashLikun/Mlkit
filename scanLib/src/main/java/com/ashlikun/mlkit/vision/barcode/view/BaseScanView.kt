@@ -25,7 +25,7 @@ import java.io.File
  * 功能介绍：基础的扫码view
  */
 typealias OnScanSuccess = (AnalyzeResult<List<Barcode>>) -> Unit
-typealias OnScanResultFailure = () -> Unit
+typealias OnScanResultFailure = (isParseFile: Boolean) -> Unit
 
 abstract class BaseScanView @JvmOverloads constructor(
     context: Context,
@@ -37,6 +37,7 @@ abstract class BaseScanView @JvmOverloads constructor(
      * 结果回调，提供给外部使用
      */
     var onResult: OnScanSuccess? = null
+    var onFailure: OnScanResultFailure? = null
 
     /**
      * 预览的View
@@ -68,9 +69,14 @@ abstract class BaseScanView @JvmOverloads constructor(
     /**
      * 扫码结果回调
      */
-    open val onScanResultCallback = object : OnScanResultCallback<List<Barcode>> {
+    protected open val onScanResultCallback = object : OnScanResultCallback<List<Barcode>> {
         override fun onScanResultCallback(result: AnalyzeResult<List<Barcode>>) {
             onResult?.invoke(result)
+        }
+
+        override fun onScanResultFailure(isParseFile: Boolean) {
+            super.onScanResultFailure(isParseFile)
+            onFailure?.invoke(isParseFile)
         }
     }
 
@@ -78,10 +84,9 @@ abstract class BaseScanView @JvmOverloads constructor(
     protected abstract val layoutId: Int
 
     init {
-        LayoutInflater.from(context).inflate(layoutId, this, false)
-            .let {
-                addView(it)
-            }
+        LayoutInflater.from(context).inflate(layoutId, this, false).let {
+            addView(it)
+        }
         //手电筒点击
         flashlightView?.setOnClickListener {
             toggleTorchState()

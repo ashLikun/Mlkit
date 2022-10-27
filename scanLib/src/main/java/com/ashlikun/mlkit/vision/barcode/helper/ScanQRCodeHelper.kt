@@ -2,12 +2,11 @@ package com.ashlikun.mlkit.vision.barcode.helper
 
 import android.content.Context
 import android.graphics.Bitmap
-import com.google.mlkit.vision.barcode.common.Barcode
 import com.ashlikun.mlkit.vision.barcode.analyze.BarcodeScanningAnalyzer
 import com.ashlikun.mlkit.vision.barcode.view.OnScanSuccess
-import com.ashlikun.mlkit.vision.barcode.view.OnScanResultFailure
 import com.ashlikun.mlkit.vision.camera.AnalyzeResult
 import com.ashlikun.mlkit.vision.camera.analyze.Analyzer.OnAnalyzeListener
+import com.google.mlkit.vision.barcode.common.Barcode
 import java.io.File
 
 /**
@@ -21,7 +20,7 @@ object ScanQRCodeHelper {
     /**
      * 解码
      */
-    fun syncDecodeFile(context: Context, filePath: String, failuer: OnScanResultFailure? = null, success: OnScanSuccess) {
+    fun syncDecodeFile(context: Context, filePath: String, failuer: (() -> Unit)? = null, success: OnScanSuccess) {
         val file = File(filePath)
         if (!file.exists())
             return
@@ -40,7 +39,7 @@ object ScanQRCodeHelper {
     /**
      * 解码
      */
-    fun syncDecodeBitmap(bitmap: Bitmap?, failuer: OnScanResultFailure? = null, success: OnScanSuccess) {
+    fun syncDecodeBitmap(bitmap: Bitmap?, failuer: (() -> Unit)? = null, success: OnScanSuccess) {
         if (bitmap == null)
             return
         val de = BarcodeScanningAnalyzer(Barcode.FORMAT_ALL_FORMATS)

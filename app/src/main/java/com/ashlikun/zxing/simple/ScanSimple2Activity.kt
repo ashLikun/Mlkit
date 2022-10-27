@@ -22,8 +22,10 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ashlikun.zxing.simple.databinding.QrcodeScanActivity2Binding
 import com.king.app.dialog.AppDialog
@@ -74,6 +76,13 @@ class ScanSimple2Activity : AppCompatActivity() {
             val imageView = config.getView<ImageView>(R.id.ivDialogContent)
             imageView.setImageBitmap(bitmap)
             AppDialog.INSTANCE.showDialog(config, false)
+        }
+        binding.scanView.onFailure = {
+            if (it) {
+                Toast.makeText(this@ScanSimple2Activity, "识别错误", Toast.LENGTH_SHORT).show()
+            } else {
+                Log.e("aaaaaa", "111111111111111111")
+            }
         }
         binding.rightTextView.setOnClickListener {
             if (!checkPermissionRW()) {
