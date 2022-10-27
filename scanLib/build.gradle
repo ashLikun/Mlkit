@@ -38,7 +38,7 @@ android {
 dependencies {
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly rootProject.ext.v7AppCompat
-    implementation "com.google.mlkit:barcode-scanning:17.0.2"
+    api "com.google.mlkit:barcode-scanning:17.0.2"
     api project(':camera-core')
 }
 apply from: '../maven.gradle'
