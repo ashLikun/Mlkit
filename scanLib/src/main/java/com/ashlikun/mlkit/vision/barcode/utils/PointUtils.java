@@ -2,7 +2,7 @@ package com.ashlikun.mlkit.vision.barcode.utils;
 
 import android.graphics.Point;
 
-import com.ashlikun.mlkit.vision.camera.util.LogUtils;
+import com.ashlikun.mlkit.vision.camera.util.MlLogUtils;
 
 
 /**
@@ -68,7 +68,7 @@ public final class PointUtils {
      * @return
      */
     public static Point transform(int x,int y, int srcWidth, int srcHeight, int destWidth, int destHeight, boolean isFit){
-        LogUtils.d(String.format("transform: %d,%d | %d,%d", srcWidth, srcHeight, destWidth , destHeight));
+        MlLogUtils.d(String.format("transform: %d,%d | %d,%d", srcWidth, srcHeight, destWidth , destHeight));
         float widthRatio = destWidth * 1.0f / srcWidth;
         float heightRatio = destHeight * 1.0f / srcHeight;
         Point point = new Point();

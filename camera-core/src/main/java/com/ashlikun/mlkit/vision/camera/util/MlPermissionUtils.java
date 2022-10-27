@@ -27,9 +27,9 @@ import androidx.fragment.app.Fragment;
 /**
  * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
  */
-public class PermissionUtils {
+public class MlPermissionUtils {
 
-    private PermissionUtils(){
+    private MlPermissionUtils(){
         throw new AssertionError();
     }
 

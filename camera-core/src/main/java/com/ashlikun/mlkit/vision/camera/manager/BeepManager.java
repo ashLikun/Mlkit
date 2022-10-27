@@ -24,7 +24,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 
 
-import com.ashlikun.mlkit.vision.camera.util.LogUtils;
+import com.ashlikun.mlkit.vision.camera.util.MlLogUtils;
 import com.king.mlkit.vision.camera.R;
 
 import java.io.Closeable;
@@ -89,7 +89,7 @@ public final class BeepManager implements MediaPlayer.OnErrorListener, Closeable
             mediaPlayer.prepare();
             return mediaPlayer;
         } catch (Exception e) {
-            LogUtils.w(e);
+            MlLogUtils.w(e);
             mediaPlayer.release();
             return null;
         }
@@ -110,7 +110,7 @@ public final class BeepManager implements MediaPlayer.OnErrorListener, Closeable
                 mediaPlayer = null;
             }
         }catch (Exception e){
-            LogUtils.e(e);
+            MlLogUtils.e(e);
         }
     }
 

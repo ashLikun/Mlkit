@@ -47,8 +47,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.ashlikun.mlkit.vision.camera.analyze.Analyzer;
 import com.ashlikun.mlkit.vision.camera.config.CameraConfig;
 import com.ashlikun.mlkit.vision.camera.manager.BeepManager;
-import com.ashlikun.mlkit.vision.camera.util.ImageUtils;
-import com.ashlikun.mlkit.vision.camera.util.LogUtils;
+import com.ashlikun.mlkit.vision.camera.util.MlImageUtils;
+import com.ashlikun.mlkit.vision.camera.util.MlLogUtils;
 
 import java.io.File;
 import java.util.concurrent.Executors;
@@ -87,6 +87,10 @@ public class BaseCameraScan<T> extends CameraScan<T> {
 
     private CameraConfig mCameraConfig;
     private Analyzer<T> mAnalyzer;
+
+    private int STANDVALUES = 100;
+
+    private Boolean isBright = null;
 
     /**
      * 是否分析
@@ -188,24 +192,18 @@ public class BaseCameraScan<T> extends CameraScan<T> {
             }
             return false;
         });
-
-
         mBeepManager = new BeepManager(mContext);
 
     }
 
-    private int STANDVALUES = 100;
-
-    private boolean isBright = true;
-
     private void handleFlash(int avDark) {
         Message msg = Message.obtain();
         msg.what = FLASH_CHANG;
-        if (avDark > STANDVALUES && isBright) {
+        if (avDark > STANDVALUES && (isBright == null || isBright)) {
             isBright = false;
             msg.obj = false;
         }
-        if (avDark < STANDVALUES && !isBright) {
+        if (avDark < STANDVALUES && (isBright == null || !isBright)) {
             isBright = true;
             msg.obj = true;
         }
@@ -255,7 +253,7 @@ public class BaseCameraScan<T> extends CameraScan<T> {
 
     private void startFocusAndMetering(float x, float y) {
         if (mCamera != null) {
-            LogUtils.d("startFocusAndMetering:" + x + "," + y);
+            MlLogUtils.d("startFocusAndMetering:" + x + "," + y);
             MeteringPoint point = mPreviewView.getMeteringPointFactory().createPoint(x, y);
             mCamera.getCameraControl().startFocusAndMetering(new FocusMeteringAction.Builder(point).build());
         }
@@ -300,7 +298,7 @@ public class BaseCameraScan<T> extends CameraScan<T> {
                         isAnalyzeResult = true;
                         byte[] bytes = mAnalyzer.analyze(image, mOnAnalyzeListener);
                         if (bytes != null && flashlightView != null) {
-                            handleFlash(ImageUtils.getAvDark(bytes));
+                            handleFlash(MlImageUtils.getAvDark(bytes));
                         }
                     }
                     image.close();
@@ -311,7 +309,7 @@ public class BaseCameraScan<T> extends CameraScan<T> {
                 //绑定到生命周期
                 mCamera = mCameraProviderFuture.get().bindToLifecycle(mLifecycleOwner, cameraSelector, preview, imageAnalysis);
             } catch (Exception e) {
-                LogUtils.e(e);
+                MlLogUtils.e(e);
             }
 
         }, ContextCompat.getMainExecutor(mContext));
@@ -352,7 +350,7 @@ public class BaseCameraScan<T> extends CameraScan<T> {
             try {
                 mCameraProviderFuture.get().unbindAll();
             } catch (Exception e) {
-                LogUtils.e(e);
+                MlLogUtils.e(e);
             }
         }
     }

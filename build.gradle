@@ -34,16 +34,16 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 ext {
-    superVersion = "1.1.0"
+    superVersion = "1.2.+"
     compileSdkVersion = 31
     buildToolsVersion = "31.0.0"
     designVersion = "com.google.android.material:material:" + superVersion
     v4Version = "androidx.legacy:legacy-support-v4:" + superVersion
     v7AppCompat = "androidx.appcompat:appcompat:" + superVersion
-    camera_core = "androidx.camera:camera-core:1.1.0-rc01"
-    camera2 = "androidx.camera:camera-camera2:1.1.0-rc01"
-    camera_lifecycle = "androidx.camera:camera-lifecycle:1.1.0-rc01"
-    camera_view = "androidx.camera:camera-view:1.1.0-rc01"
+    camera_core = "androidx.camera:camera-core:1.1.+"
+    camera2 = "androidx.camera:camera-camera2:1.1.+"
+    camera_lifecycle = "androidx.camera:camera-lifecycle:1.1.+"
+    camera_view = "androidx.camera:camera-view:1.1.+"
     targetSdkVersion = 26
     minSdkVersion = 21
     versionCode = 1

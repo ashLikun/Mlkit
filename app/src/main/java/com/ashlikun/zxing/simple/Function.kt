@@ -19,7 +19,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.ashlikun.mlkit.vision.camera.util.LogUtils
+import com.ashlikun.mlkit.vision.camera.util.MlLogUtils
 
 /**
  * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
@@ -39,7 +39,7 @@ fun Bitmap.drawBitmap(block: (canvas: Canvas, paint: Paint) -> Unit): Bitmap {
         canvas.save()
         canvas.restore()
     } catch (e: Exception) {
-        LogUtils.w(e.message)
+        MlLogUtils.w(e.message)
     }
     return result
 }
@@ -59,7 +59,7 @@ fun Bitmap.drawRect(block: (canvas: Canvas, paint: Paint) -> Unit): Bitmap {
         canvas.save()
         canvas.restore()
     } catch (e: Exception) {
-        LogUtils.w(e.message)
+        MlLogUtils.w(e.message)
     }
     return result
 }

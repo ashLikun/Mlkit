@@ -31,8 +31,8 @@ import com.ashlikun.mlkit.vision.barcode.utils.Utils
 import com.ashlikun.mlkit.vision.camera.AnalyzeResult
 import com.ashlikun.mlkit.vision.camera.analyze.Analyzer
 import com.ashlikun.mlkit.vision.camera.analyze.Analyzer.OnAnalyzeListener
-import com.ashlikun.mlkit.vision.camera.util.BitmapUtils
-import com.ashlikun.mlkit.vision.camera.util.LogUtils
+import com.ashlikun.mlkit.vision.camera.util.MlBitmapUtils
+import com.ashlikun.mlkit.vision.camera.util.MlLogUtils
 import java.io.File
 
 /**
@@ -57,8 +57,8 @@ class BarcodeScanningAnalyzer : Analyzer<List<Barcode>> {
 
     override fun analyze(imageProxy: ImageProxy, listener: OnAnalyzeListener<AnalyzeResult<List<Barcode>>>): ByteArray? {
         try {
-            val nv21Buffer = BitmapUtils.yuv420ThreePlanesToNV21(imageProxy.image?.planes, imageProxy.width, imageProxy.height)
-            val bitmap = BitmapUtils.getBitmap(nv21Buffer, imageProxy.width, imageProxy.height, imageProxy.imageInfo.rotationDegrees)
+            val nv21Buffer = MlBitmapUtils.yuv420ThreePlanesToNV21(imageProxy.image?.planes, imageProxy.width, imageProxy.height)
+            val bitmap = MlBitmapUtils.getBitmap(nv21Buffer, imageProxy.width, imageProxy.height, imageProxy.imageInfo.rotationDegrees)
             //            final Bitmap bitmap = ImageUtils.imageProxyToBitmap(imageProxy);
 //            @SuppressLint("UnsafeExperimentalUsageError")
 //            InputImage inputImage = InputImage.fromMediaImage(imageProxy.getImage(),imageProxy.getImageInfo().getRotationDegrees());
@@ -74,7 +74,7 @@ class BarcodeScanningAnalyzer : Analyzer<List<Barcode>> {
             return nv21Buffer?.array()
         } catch (e: Exception) {
             listener.onFailure()
-            LogUtils.w(e)
+            MlLogUtils.w(e)
         }
         return null
     }
@@ -107,7 +107,7 @@ class BarcodeScanningAnalyzer : Analyzer<List<Barcode>> {
             }
         } catch (e: Exception) {
             listener.onFailure()
-            LogUtils.w(e)
+            MlLogUtils.w(e)
         }
     }
 
@@ -124,7 +124,7 @@ class BarcodeScanningAnalyzer : Analyzer<List<Barcode>> {
                 }.addOnFailureListener { e: Exception? -> listener.onFailure() }
         } catch (e: Exception) {
             listener.onFailure()
-            LogUtils.w(e)
+            MlLogUtils.w(e)
         }
     }
 }

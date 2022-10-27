@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-public class BitmapUtils {
+public class MlBitmapUtils {
 
     /** Converts NV21 format byte buffer to bitmap. */
     @Nullable
@@ -43,7 +43,7 @@ public class BitmapUtils {
             stream.close();
             return rotateBitmap(bmp, rotationDegrees, false, false);
         } catch (Exception e) {
-            LogUtils.e( "Error: " + e.getMessage());
+            MlLogUtils.e( "Error: " + e.getMessage());
         }
         return null;
     }
@@ -142,7 +142,7 @@ public class BitmapUtils {
 
             exif = new ExifInterface(inputStream);
         } catch (IOException e) {
-            LogUtils.e("failed to open file to read rotation meta data: " + imageUri, e);
+            MlLogUtils.e("failed to open file to read rotation meta data: " + imageUri, e);
             return 0;
         }
 

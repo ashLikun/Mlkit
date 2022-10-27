@@ -30,9 +30,9 @@ import java.nio.ByteBuffer;
 /**
  * @author <a href="mailto:jenly1314@gmail.com">Jenly</a>
  */
-public class ImageUtils {
+public class MlImageUtils {
 
-    private ImageUtils() {
+    private MlImageUtils() {
         throw new AssertionError();
     }
 

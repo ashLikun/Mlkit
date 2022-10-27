@@ -21,7 +21,7 @@ import android.util.Log;
 /**
  * @author Jenly <a href="mailto:jenly1314@gmail.com">Jenly</a>
  */
-public class LogUtils {
+public class MlLogUtils {
 
     public static final String TAG = "MLKit";
 
@@ -70,13 +70,13 @@ public class LogUtils {
 
     public static final String TAG_FORMAT = "%s.%s(%s:%d)";
 
-    private LogUtils(){
+    private MlLogUtils(){
         throw new AssertionError();
     }
 
     public static void setShowLog(boolean isShowLog) {
 
-        LogUtils.isShowLog = isShowLog;
+        MlLogUtils.isShowLog = isShowLog;
     }
 
     public static boolean isShowLog() {
@@ -91,7 +91,7 @@ public class LogUtils {
 
     public static void setPriority(int priority) {
 
-        LogUtils.priority = priority;
+        MlLogUtils.priority = priority;
     }
 
     /**
