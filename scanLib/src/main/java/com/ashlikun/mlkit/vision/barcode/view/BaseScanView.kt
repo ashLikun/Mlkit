@@ -60,10 +60,22 @@ abstract class BaseScanView @JvmOverloads constructor(
     /**
      * 相机类
      */
-    open val cameraScan by lazy {
+    val cameraScan by lazy {
         BaseCameraScan<List<Barcode>>(context, lifecycleOwner, previewView!!)
+            .apply {
+                initCameraScan(this)
+            }
             .setAnalyzer(analyzer)
             .setOnScanResultCallback(onScanResultCallback)
+
+    }
+
+    /**
+     * 配置一些属性
+     */
+    open fun initCameraScan(cameraScan: BaseCameraScan<List<Barcode>>) {
+        cameraScan.setVibrate(true)
+        cameraScan.setPlayBeep(true)
     }
 
     /**
